@@ -1,0 +1,111 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Room - Edan Homestay</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    {% include 'admin_navbar.html' %}
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h4>Edit Room Details</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Room Name -->
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" value="{{ room.name }}" required>
+                    </div>
+                    
+                    <!-- Room Type Dropdown -->
+                    <div class="form-group">
+                        <label for="type">Type:</label>
+                        <select class="form-control" id="type" name="type" required>
+                            <option value="Single" {% if room.type == "Single" %}selected{% endif %}>Single</option>
+                            <option value="Double" {% if room.type == "Double" %}selected{% endif %}>Double</option>
+                            <option value="Suite" {% if room.type == "Suite" %}selected{% endif %}>Suite</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Room Description -->
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea class="form-control" id="description" name="description" rows="4" required>{{ room.description }}</textarea>
+                    </div>
+                    
+                    <!-- Room Price -->
+                    <div class="form-group">
+                        <label for="price">Price:</label>
+                        <input type="number" class="form-control" id="price" name="price" value="{{ room.price }}" step="0.01" required>
+                    </div>
+                    
+                    <!-- Availability Dropdown -->
+                    <div class="form-group">
+                        <label for="availability">Availability:</label>
+                        <select class="form-control" id="availability" name="availability" required>
+                            <option value="Available" {% if room.availability == "Available" %}selected{% endif %}>Available</option>
+                            <option value="Unavailable" {% if room.availability == "Unavailable" %}selected{% endif %}>Unavailable</option>
+                        </select>
+                    </div>
+
+                    <!-- Existing Images -->
+                    <div class="form-group">
+                        <label>Existing Images:</label><br>
+                        {% for img in room.images.all %}
+                            <img src="{{ img.image.url }}" alt="Room Image" class="img-thumbnail" style="max-width: 150px; margin: 5px;">
+                        {% empty %}
+                            <p>No images available.</p>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Existing Videos -->
+                    <div class="form-group">
+                        <label>Existing Videos:</label><br>
+                        {% for vid in room.videos.all %}
+                            <video width="320" height="240" controls>
+                                <source src="{{ vid.video.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        {% empty %}
+                            <p>No videos available.</p>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Upload New Images -->
+                    <div class="form-group">
+                        <label for="images">Upload New Images:</label>
+                        <input type="file" class="form-control-file" id="images" name="images" multiple>
+                    </div>
+
+                    <!-- Upload New Videos -->
+                    <div class="form-group">
+                        <label for="videos">Upload New Videos:</label>
+                        <input type="file" class="form-control-file" id="videos" name="videos" multiple>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                    <a href="{% url 'admin_manage_room' %}" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap and jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

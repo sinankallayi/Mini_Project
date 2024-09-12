@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edan Homestay - Add Room</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <style>
+        body {
+            padding-top: 70px; /* To prevent content hiding behind fixed navbar */
+        }
+
+        .form-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-action {
+            border-radius: 20px;
+            padding: 5px 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-action:hover {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    {% include 'admin_navbar.html' %}
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h4>Add New Room</h4>
+                    </div>
+                    <div class="card-body form-section">
+                        <form action="{% url 'admin_add_room' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="roomName">Room Name</label>
+                                <input type="text" class="form-control" id="roomName" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="roomType">Room Type</label>
+                                <select class="form-control" id="roomType" name="type" required>
+                                    <option value="single">Single</option>
+                                    <option value="double">Double</option>
+                                    <option value="suite">Suite</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="roomDesc">Description</label>
+                                <textarea class="form-control" id="roomDesc" name="description" rows="3" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="roomPrice">Price per Night</label>
+                                <input type="number" class="form-control" id="roomPrice" name="price" placeholder="₹1000" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="roomImages">Room Images</label>
+                                <input type="file" class="form-control-file" id="roomImages" name="images" multiple required>
+                            </div>
+                            <div class="form-group">
+                                <label for="roomVideos">Room Videos</label>
+                                <input type="file" class="form-control-file" id="roomVideos" name="videos" multiple>
+                            </div>
+                            <div class="form-group">
+                                <label for="availability">Availability</label>
+                                <select class="form-control" id="availability" name="availability">
+                                    <option value="available">Available</option>
+                                    <option value="unavailable">Unavailable</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-action">Add Room</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer (Optional) -->
+    <footer class="bg-light text-center py-3">
+        <p>&copy; 2024 Edan Homestay Admin. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap and jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

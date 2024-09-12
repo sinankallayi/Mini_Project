@@ -1,0 +1,210 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edan Homestay - Manage Rooms</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            padding-top: 70px;
+            /* To prevent content hiding behind fixed navbar */
+        }
+
+
+
+        /* Dashboard Cards */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Table Styling */
+        .table thead th {
+            background-color: #343a40;
+            color: #ffffff;
+        }
+
+        /* Action Buttons */
+        .btn-action {
+            border-radius: 20px;
+            padding: 5px 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-action:hover {
+            transform: scale(1.1);
+        }
+
+        /* Profile Icon */
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    {% include 'admin_navbar.html' %}
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <!-- Manage Rooms Section -->
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h4>Manage Rooms</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <a href="{% url 'admin_add_room' %}" class="btn btn-success btn-action">
+                                <i class="bi bi-plus-circle"></i> Add New Room
+                            </a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Price</th>
+                                        <th>Images</th>
+                                        <th>Videos</th>
+                                        <th>Availability</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for room in rooms %}
+                                    <tr>
+                                        <td>{{ room.name | upper }}</td>
+                                        <td>{{ room.type }}</td>
+                                        <td>{{ room.description }}</td>
+                                        <td>₹{{ room.price }}/night</td>
+                                        <td>
+                                            <div class="d-flex flex-wrap">
+                                                {% for image in room.images.all %}
+                                                <div class="d-flex flex-column align-items-center mb-3 mr-3">
+                                                    <img src="{{ image.image.url }}" alt="Room Image"
+                                                        style="width: 50px; height: 50px; margin-bottom: 4px;">
+                                                    <a href="#" class="btn btn-info btn-sm btn-action"
+                                                        data-toggle="modal" data-target="#viewImageModal"
+                                                        onclick="previewSelectedImage('{{ image.image.url }}')">
+                                                        <i class="bi bi-eye-fill"></i> View
+                                                    </a>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </td>
+
+
+
+                                        <td>
+                                            <div class="d-flex flex-wrap">
+                                                {% for video in room.videos.all %}
+                                                <div class="d-flex flex-column align-items-center mb-3 mr-3">
+                                                    <a href="{{ video.video.url }}"
+                                                        class="btn btn-info btn-sm btn-action mr-2" target="_blank">
+                                                        View Video {{ forloop.counter }}
+                                                    </a>
+                                                </div>
+                                                {% endfor %}
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            {% if room.availability == 'Available' %}
+                                            <span class="badge badge-success">Available</span>
+                                            {% else %}
+                                            <span class="badge badge-danger">Unavailable</span>
+                                            {% endif %}
+                                        </td>
+
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                <a href="{% url 'admin_edit_room' room.id %}"
+                                                    class="btn btn-primary btn-sm btn-action mb-2">
+                                                    <i class="bi bi-pencil-square"></i> Edit
+                                                </a>
+                                                <a href="{% url 'delete_room' room.id %}"
+                                                    class="btn btn-danger btn-sm btn-action">
+                                                    <i class="bi bi-trash-fill"></i> Delete
+                                                </a>
+
+                                            </div>
+                                        </td>
+
+
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="8" class="text-center">No rooms found</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image View Modal -->
+    <div class="modal fade" id="viewImageModal" tabindex="-1" aria-labelledby="viewImageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewImageModalLabel">Room Image</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="roomImage" src="" alt="Room Image" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer (Optional) -->
+    <footer class="bg-light text-center py-3">
+        <p>&copy; 2024 Edan Homestay Admin. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap and jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function previewSelectedImage(imageUrl) {
+            // Set the image URL in the modal's image element
+            document.getElementById('roomImage').src = imageUrl;
+
+            // Show the modal
+            $('#viewImageModal').modal('show');
+        }
+
+    </script>
+
+
+
+</body>
+
+</html>
