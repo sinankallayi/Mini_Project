@@ -9,6 +9,14 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            padding-top: 80px; /* Adjust according to navbar height */
+            padding-bottom: 60px;
+        }
+    </style>
+
 </head>
 <body>
     <!-- Navbar -->
@@ -56,8 +64,8 @@
                     <div class="form-group">
                         <label for="availability">Availability:</label>
                         <select class="form-control" id="availability" name="availability" required>
-                            <option value="Available" {% if room.availability == "Available" %}selected{% endif %}>Available</option>
-                            <option value="Unavailable" {% if room.availability == "Unavailable" %}selected{% endif %}>Unavailable</option>
+                            <option value="available" {% if room.availability == "available" %}selected{% endif %}>Available</option>
+                            <option value="unavailable" {% if room.availability == "unavailable" %}selected{% endif %}>Unavailable</option>
                         </select>
                     </div>
 

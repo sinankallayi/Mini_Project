@@ -105,8 +105,10 @@
                     <a class="nav-link" href="#footer">Contact</a>
                 </li>
             </ul>
-            <!-- Bootstrap profile icon with motion -->
-            <i class="bi bi-person-circle profile-icon" style="font-size: 1.5rem; margin-right: 10px;"></i>
+            <!-- Profile link -->
+            <a href="{% url 'guest_profile' %}">
+                <i class="bi bi-person-circle profile-icon" style="font-size: 1.5rem; margin-right: 10px;"></i>
+            </a>
             <!-- Logout button -->
             <a class="btn btn-logout ml-3 text-white" href="{% url 'index' %}">Logout</a>
         </div>

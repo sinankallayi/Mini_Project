@@ -126,12 +126,13 @@
                                         </td>
 
                                         <td>
-                                            {% if room.availability == 'Available' %}
-                                            <span class="badge badge-success">Available</span>
+                                            {% if room.availability == 'available' %}
+                                                <span class="badge badge-success">Available</span>
                                             {% else %}
-                                            <span class="badge badge-danger">Unavailable</span>
+                                                <span class="badge badge-danger">Unavailable</span>
                                             {% endif %}
                                         </td>
+                                        
 
                                         <td>
                                             <div class="d-flex flex-column">

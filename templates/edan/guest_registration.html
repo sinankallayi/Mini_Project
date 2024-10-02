@@ -10,48 +10,42 @@
     {% include 'navbar.html' %}
     <div class="flex items-center justify-center min-h-screen py-6" style="padding-top: 70px;">
         <div class="w-full max-w-md p-8 bg-white bg-opacity-90 rounded-lg shadow-lg">
-            
-            <form method="POST" enctype="multipart/form-data" action="/guest_registration/">
+            <form method="POST" enctype="multipart/form-data" action="/guest_registration/" onsubmit="return validateAadhaar()">
                 {% csrf_token %}
                 <div class="mb-4">
                     <label for="name" class="block text-sm font-semibold mb-2">Name:</label>
                     <div class="relative">
                         <input type="text" id="name" name="name" class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
-                        <div class="absolute inset-y-0 right-0 flex items-center px-2">
-                            <i class="fas fa-user text-gray-500"></i>
-                        </div>
                     </div>
                 </div>
                 <div class="mb-4">
                     <label for="number" class="block text-sm font-semibold mb-2">Phone Number:</label>
                     <div class="relative">
                         <input type="number" id="number" name="number" class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
-                        <div class="absolute inset-y-0 right-0 flex items-center px-2">
-                            <i class="fas fa-phone text-gray-500"></i>
-                        </div>
                     </div>
                 </div>
                 <div class="mb-4">
                     <label for="email" class="block text-sm font-semibold mb-2">Email:</label>
                     <div class="relative">
                         <input type="email" id="email" name="email" class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
-                        <div class="absolute inset-y-0 right-0 flex items-center px-2">
-                            <i class="fas fa-envelope text-gray-500"></i>
-                        </div>
                     </div>
+                    {% if error_message %}
+                    <p class="text-red-500 text-sm mt-2">{{ error_message }}</p>
+                    {% endif %}
                 </div>
-                <div class="mb-4 relative">
+                <div class="mb-4">
                     <label for="password" class="block text-sm font-semibold mb-2">Password:</label>
                     <div class="relative">
                         <input type="password" id="password" name="password" class="block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" required>
-                        <div class="absolute inset-y-0 right-0 flex items-center px-2 cursor-pointer" onclick="togglePasswordVisibility()">
-                            <i class="fas fa-eye text-gray-500" id="toggle-password-icon"></i>
-                        </div>
                     </div>
                 </div>
                 <div class="mb-4">
-                    <label for="image" class="block text-sm font-semibold mb-2">Upload Image:</label>
+                    <label for="image" class="block text-sm font-semibold mb-2">Upload Profile Image:</label>
                     <input type="file" id="image" name="image" class="block w-full px-4 py-2 border border-gray-300 rounded-lg">
+                </div>
+                <div class="mb-4">
+                    <label for="aadhaar_image" class="block text-sm font-semibold mb-2">Upload Aadhaar Image:</label>
+                    <input type="file" id="aadhaar_image" name="aadhaar_image" class="block w-full px-4 py-2 border border-gray-300 rounded-lg" required>
                 </div>
                 <button type="submit" class="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">Register</button>
             </form>
@@ -62,22 +56,15 @@
         <p>&copy; 2024 Edan Homestay. All rights reserved.</p>
     </footer>
 
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <script>
-        function togglePasswordVisibility() {
-            const passwordInput = document.querySelector('#password');
-            const togglePasswordIcon = document.querySelector('#toggle-password-icon');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                togglePasswordIcon.classList.remove('fa-eye');
-                togglePasswordIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                togglePasswordIcon.classList.remove('fa-eye-slash');
-                togglePasswordIcon.classList.add('fa-eye');
+        function validateAadhaar() {
+            const aadhaarInput = document.getElementById('aadhaar_image').files[0];
+            if (!aadhaarInput) {
+                alert('Please upload your Aadhaar image.');
+                return false;
             }
+            return true;
         }
     </script>
 </body>

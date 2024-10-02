@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
     <!-- Bootstrap Icons CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    
+
     <style>
         .navbar {
             background-color: #343a40;
@@ -39,7 +40,8 @@
 
         /* Hover effect for nav links */
         .navbar-nav .nav-link:hover {
-            transform: translateY(-3px); /* Lift effect on hover */
+            transform: translateY(-3px);
+            /* Lift effect on hover */
             color: #64b5f6 !important;
         }
 
@@ -54,7 +56,8 @@
 
         .btn-logout:hover {
             background-color: #e04e4e;
-            transform: scale(1.05); /* Slight zoom on hover */
+            transform: scale(1.05);
+            /* Slight zoom on hover */
         }
 
         /* Profile Icon */
@@ -66,7 +69,8 @@
         }
 
         .profile-icon:hover {
-            transform: rotate(360deg); /* Rotate effect on hover */
+            transform: rotate(360deg);
+            /* Rotate effect on hover */
         }
 
         @media (max-width: 576px) {
@@ -77,6 +81,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -86,14 +91,16 @@
                 <span>Edan<br>Admin</span>
             </div>
         </a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#adminNavbar" aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#adminNavbar"
+            aria-controls="adminNavbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse" id="adminNavbar">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" href="{% url 'admin_dashboard' %}">Dashboard <span
+                            class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'admin_manage_room'  %}">Manage Rooms</a>
@@ -109,7 +116,10 @@
                 </li>
             </ul>
             <!-- Bootstrap profile icon with motion -->
-            <i class="bi bi-person-circle profile-icon"></i>
+            <a href="{% url 'admin_profile' %}">
+                <i class="bi bi-person-circle profile-icon"></i>
+            </a>
+
             <!-- Logout button -->
             <a class="btn btn-logout ml-3 text-white" href="{% url 'index' %}">Logout</a>
         </div>
@@ -119,4 +129,5 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

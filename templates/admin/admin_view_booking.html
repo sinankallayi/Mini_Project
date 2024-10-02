@@ -1,0 +1,111 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Details - Edan Homestay</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            padding-top: 90px;
+            /* To prevent content hiding behind fixed navbar */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    {% include 'admin_navbar.html' %}
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+        <h2>Booking Details</h2>
+        <table class="table table-bordered">
+            <tr>
+                <th>Booking ID</th>
+                <td>{{ booking.booking_id }}</td>
+            </tr>
+            <tr>
+                <th>Guest Name</th>
+                <td>
+                    {{ booking.guest.name }}
+                    <a href="{% url 'admin_view_guest_details' booking.guest.id %}"
+                        class="btn btn-info btn-sm ml-2">View</a>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Room</th>
+                <td>{{ booking.room.name }}</td>
+            </tr>
+            <tr>
+                <th>Check-in Date</th>
+                <td>{{ booking.check_in }}</td>
+            </tr>
+            <tr>
+                <th>Check-out Date</th>
+                <td>{{ booking.check_out }}</td>
+            </tr>
+            <tr>
+                <th>Number of Guests</th>
+                <td>{{ booking.number_of_guests }}</td>
+            </tr>
+            <tr>
+                <th>Advance Payment</th>
+                <td>₹{{ booking.advance_payment }}</td>
+            </tr>
+            <tr>
+                <th>Balance Amount</th>
+                <td>₹{{ booking.balance_amount }}</td>
+            </tr>
+
+            <tr>
+                <th>Status</th>
+                <td>{{ booking.status }}</td>
+            </tr>
+            {% if booking.status == "Booked" %}
+            <tr>
+                <td colspan="2">
+                    <form action="{% url 'admin_send_message' booking.booking_id %}" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="messageContent">Message to Guest:</label>
+                            <textarea class="form-control" id="messageContent" name="messageContent" rows="4"
+                                placeholder="Type your custom message here...">Dear {{ booking.guest.name }}, your room booking is successful! Advance Amount: ₹{{ booking.advance_payment }}, Balance Amount: ₹{{ booking.balance_amount }}. Welcome to Edan Homestay, and enjoy your stay!</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                    {% if messages %}
+                        <div class="mt-3">
+                            {% for message in messages %}
+                                <div class="alert alert-success" role="alert">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+        </table>
+
+        <a href="{% url 'admin_manage_bookings' %}" class="btn btn-secondary">Back to Manage Bookings</a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-3">
+        <p>&copy; 2024 Edan Homestay Admin. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ room.name }} - Room Details</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 80px;
+        }
+
+        .room-details-container {
+            margin-top: 30px;
+        }
+
+        .room-carousel img,
+        .carousel-item video {
+            object-fit: cover;
+            height: 500px;
+            /* Increase the height */
+        }
+
+        .room-description {
+            margin-top: 20px;
+        }
+
+        .price {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        /* Footer styles */
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+    </style>
+
+</head>
+
+<body>
+    {% include 'guest_navbar.html' %}
+    <div class="container room-details-container">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Updated Carousel with Images and Video -->
+                <div id="roomCarousel" class="carousel slide room-carousel" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <!-- Images in the carousel -->
+                        {% for image in room.images.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ image.image.url }}" class="d-block w-100"
+                                alt="Room Image {{ forloop.counter }}">
+                        </div>
+                        {% endfor %}
+
+                        <!-- Video as one of the carousel items -->
+                        <div class="carousel-item">
+                            <video controls class="d-block w-100">
+                                <source src="{{ room.video.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+
+                    <!-- Carousel controls -->
+                    <a class="carousel-control-prev" href="#roomCarousel" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#roomCarousel" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h2 class="font-weight-bold">{{ room.name }}</h2>
+                <p class="price">₹{{ room.price }} / night</p>
+                <p class="font-weight-semibold">Room Type: <span class="text-info">{{ room.type }}</span></p>
+                <p>Availability:
+                    <span class="{% if room.availability == 'available' %}text-success{% else %}text-danger{% endif %}">
+                        {% if room.availability == 'available' %}Available{% else %}Not Available{% endif %}
+                    </span>
+                </p>
+                <div class="room-description mt-3">
+                    <h4>Description:</h4>
+                    <p>{{ room.description }}</p>
+                </div>
+                {% if room.availability == 'available' %}
+                <a href="{% url 'guest_book_room' room.id %}" class="btn btn-primary mt-3">Book Now</a>
+                {% else %}
+                <a href="#" class="btn btn-secondary btn-lg mt-3" aria-disabled="true" tabindex="-1">Not Available</a>
+                {% endif %}
+            </div>
+
+            <!-- Book This Room Section
+            <div class="col-md-6">
+                <div class="mt-4 border p-3 rounded shadow">
+                    {% if room.availability == 'available' %}
+                        <h4>Book This Room</h4>
+                        <form action="#" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="checkIn">Check-in Date</label>
+                                <input type="date" class="form-control" id="checkIn" name="check_in" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="checkOut">Check-out Date</label>
+                                <input type="date" class="form-control" id="checkOut" name="check_out" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="guestCount">Number of Guests</label>
+                                <input type="number" class="form-control" id="guestCount" name="guest_count" min="1" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg">Book Now</button>
+                        </form>
+                    {% else %}
+                        <a href="#" class="btn btn-secondary btn-lg mt-3" aria-disabled="true" tabindex="-1">Not Available</a>
+                    {% endif %}
+                </div>
+            </div> -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer" class="mt-5">
+        <p>&copy; 2024 Edan Homestay. All rights reserved.</p>
+    </footer>
+
+    <!-- Bootstrap and jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

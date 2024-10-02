@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Edan Homestay</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 80px;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'guest_navbar.html' %}
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h4>Payment Details</h4>
+            </div>
+            <div class="card-body">
+                <h5>Booking ID: {{ booking_id }}</h5>
+                <h6>Advance Amount: ₹{{ advance_payment }}</h6>
+
+                <form method="post" action="{% url 'payment_page' booking_id=booking_id advance_payment=advance_payment %}">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="payment_method">Payment Method:</label>
+                        <select class="form-control" id="payment_method" name="payment_method" required>
+                            <option value="">Select Payment Method</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Debit Card">Debit Card</option>
+                            <option value="PayPal">PayPal</option>
+                            <!-- Add more payment options as needed -->
+                        </select>
+                    </div>
+
+                    <!-- Card Information -->
+                    <div class="form-group">
+                        <label for="card_number">Card Number:</label>
+                        <input type="text" class="form-control" id="card_number" name="card_number" placeholder="Enter Card Number" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="card_expiry">Expiry Date:</label>
+                        <input type="text" class="form-control" id="card_expiry" name="card_expiry" placeholder="MM/YY" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="card_cvc">CVC:</label>
+                        <input type="text" class="form-control" id="card_cvc" name="card_cvc" placeholder="Enter CVC" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Confirm Payment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer id="footer" class="mt-5">
+        <p>&copy; 2024 Edan Homestay. All rights reserved.</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

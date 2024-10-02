@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Details - Edan Homestay</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            padding-top: 90px; /* To prevent content hiding behind fixed navbar */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Make body fill the viewport height */
+        }
+        .container {
+            flex: 1; /* Allow container to grow and fill the available space */
+        }
+        .guest-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    {% include 'admin_navbar.html' %}
+
+    <div class="container mt-4">
+        <h2>Guest Details</h2>
+        <table class="table table-bordered">
+            <tr>
+                <th>Name</th>
+                <td>{{ guest.name }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ guest.email }}</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>{{ guest.number }}</td>
+            </tr>
+            <tr>
+                <th>Profile Image</th>
+                <td>
+                    <img src="{{ guest.image.url }}" alt="Guest Image" class="guest-image">
+                </td>
+            </tr>
+            <tr>
+                <th>Aadhaar Image</th>
+                <td>
+                    {% if guest.aadhaar_image %}
+                        <img src="{{ guest.aadhaar_image.url }}" alt="Aadhaar Image" class="guest-image">
+                    {% else %}
+                        Not available
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
+
+    </div>
+
+    <footer class="bg-light text-center py-3">
+        <p>&copy; 2024 Edan Homestay Admin. All rights reserved.</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

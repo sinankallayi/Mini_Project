@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Room - Edan Homestay</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 80px;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'guest_navbar.html' %}
+    <div class="container mt-4">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h4>Book a Room</h4>
+            </div>
+            <div class="card-body form-section">
+                <form method="post" action="{% url 'guest_book_room' room.id %}" onsubmit="return validateForm()">
+                    {% csrf_token %}
+
+                    <!-- Room Name -->
+                    <div class="form-group">
+                        <label for="roomName">Room Name:</label>
+                        <input type="text" class="form-control" id="roomName" name="roomName" value="{{ room.name }}" readonly>
+                    </div>
+
+                    <!-- Room Type -->
+                    <div class="form-group">
+                        <label for="roomType">Room Type:</label>
+                        <input type="text" class="form-control" id="roomType" name="roomType" value="{{ room.type }}" readonly>
+                    </div>
+
+                    <!-- Price per Night -->
+                    <div class="form-group">
+                        <label for="balance_amount">Price per Night:</label>
+                        <input type="text" class="form-control" id="balance_amount" value="₹{{ room.price }}" readonly>
+                    </div>
+
+                    <!-- Check-in Date -->
+                    <div class="form-group">
+                        <label for="check_in">Check-In Date:</label>
+                        <input type="date" class="form-control" id="check_in" name="check_in" required>
+                    </div>
+
+                    <!-- Check-out Date -->
+                    <div class="form-group">
+                        <label for="check_out">Check-Out Date:</label>
+                        <input type="date" class="form-control" id="check_out" name="check_out" required>
+                    </div>
+
+                    <!-- Number of Guests -->
+                    <div class="form-group">
+                        <label for="number_of_guests">Number of Guests:</label>
+                        <input type="number" class="form-control" id="number_of_guests" name="number_of_guests" min="1" required>
+                    </div>
+
+                    <!-- Advance Payment -->
+                    <div class="form-group">
+                        <label for="advance_payment">Advance Payment (minimum ₹{{ half_price }}):</label>
+                        <input type="number" class="form-control" id="advance_payment" name="advance_payment" min="0" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer id="footer" class="mt-5">
+        <p>&copy; 2024 Edan Homestay. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function validateForm() {
+            // Get room price from the template and pass it into JavaScript
+            const roomPrice = parseFloat("{{ room.price|escapejs }}");
+            const checkInDate = new Date(document.getElementById('check_in').value);
+            const checkOutDate = new Date(document.getElementById('check_out').value);
+            const advancePayment = parseFloat(document.getElementById('advance_payment').value);
+
+            // Get today's date
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Set the time to 00:00:00 for accurate comparison
+
+            // Ensure check-in date is after today
+            if (checkInDate <= today) {
+                alert('Check-in date must be after today\'s date.');
+                return false;
+            }
+
+            // Ensure check-out date is after check-in date
+            if (checkOutDate <= checkInDate) {
+                alert('Check-out date must be after the check-in date.');
+                return false;
+            }
+
+            // Ensure advance payment is at least half of the room price
+            const halfRoomPrice = roomPrice / 2;
+            if (advancePayment < halfRoomPrice) {
+                alert(`Advance payment must be at least half of the room price: ₹${halfRoomPrice.toFixed(2)}.`);
+                return false;
+            }
+
+            return true;  // Allow form submission if all checks pass
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
