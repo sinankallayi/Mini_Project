@@ -5,75 +5,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment - Edan Homestay</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
             padding-top: 80px;
         }
-
-        footer {
-            background-color: #343a40;
-            color: white;
-            text-align: center;
-            padding: 15px 0;
-        }
     </style>
 </head>
 
-<body>
+<body class="bg-gray-100">
     {% include 'guest_navbar.html' %}
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-header bg-dark text-white">
-                <h4>Payment Details</h4>
+    <div class="container mx-auto mt-4">
+        <div class="bg-white shadow-md rounded-lg">
+            <div class="bg-gray-800 text-white text-lg font-semibold p-4 rounded-t-lg">
+                Payment Details
             </div>
-            <div class="card-body">
-                <h5>Booking ID: {{ booking_id }}</h5>
-                <h6>Advance Amount: ₹{{ advance_payment }}</h6>
+            <div class="p-6">
+                <h5 class="text-xl font-bold">Booking ID: {{ booking_id }}</h5>
+                <h6 class="text-lg">Advance Amount: ₹{{ advance_payment }}</h6>
 
-                <form method="post" action="{% url 'payment_page' booking_id=booking_id advance_payment=advance_payment %}">
+                <form method="post" action="{% url 'payment_page' booking_id=booking_id advance_payment=advance_payment %}" id="paymentForm">
                     {% csrf_token %}
 
-                    <div class="form-group">
-                        <label for="payment_method">Payment Method:</label>
-                        <select class="form-control" id="payment_method" name="payment_method" required>
+                    <div class="mt-4">
+                        <label for="payment_method" class="block text-sm font-medium text-gray-700">Payment Method:</label>
+                        <select class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500" id="payment_method" name="payment_method" required>
                             <option value="">Select Payment Method</option>
                             <option value="Credit Card">Credit Card</option>
                             <option value="Debit Card">Debit Card</option>
-                            <option value="PayPal">PayPal</option>
-                            <!-- Add more payment options as needed -->
                         </select>
                     </div>
 
                     <!-- Card Information -->
-                    <div class="form-group">
-                        <label for="card_number">Card Number:</label>
-                        <input type="text" class="form-control" id="card_number" name="card_number" placeholder="Enter Card Number" required>
+                    <div class="mt-4">
+                        <label for="card_number" class="block text-sm font-medium text-gray-700">Card Number:</label>
+                        <input type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500" id="card_number" name="card_number" placeholder="Enter Card Number" required>
+                        <p class="text-red-500 text-xs hidden" id="card_number_error">Invalid card number</p>
                     </div>
 
-                    <div class="form-group">
-                        <label for="card_expiry">Expiry Date:</label>
-                        <input type="text" class="form-control" id="card_expiry" name="card_expiry" placeholder="MM/YY" required>
+                    <div class="mt-4">
+                        <label for="card_expiry" class="block text-sm font-medium text-gray-700">Expiry Date:</label>
+                        <input type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500" id="card_expiry" name="card_expiry" placeholder="MM/YY" required>
+                        <p class="text-red-500 text-xs hidden" id="card_expiry_error">Invalid expiry date</p>
                     </div>
 
-                    <div class="form-group">
-                        <label for="card_cvc">CVC:</label>
-                        <input type="text" class="form-control" id="card_cvc" name="card_cvc" placeholder="Enter CVC" required>
+                    <div class="mt-4">
+                        <label for="card_cvc" class="block text-sm font-medium text-gray-700">CVC:</label>
+                        <input type="text" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500" id="card_cvc" name="card_cvc" placeholder="Enter CVC" required>
+                        <p class="text-red-500 text-xs hidden" id="card_cvc_error">Invalid CVC</p>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Confirm Payment</button>
+                    <button type="submit" class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">Confirm Payment</button>
                 </form>
             </div>
         </div>
     </div>
 
-    <footer id="footer" class="mt-5">
+    <footer class="mt-5 bg-gray-800 text-white text-center p-4">
         <p>&copy; 2024 Edan Homestay. All rights reserved.</p>
     </footer>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', function (event) {
+            let valid = true;
+
+            // Clear previous error messages
+            document.getElementById('card_number_error').classList.add('hidden');
+            document.getElementById('card_expiry_error').classList.add('hidden');
+            document.getElementById('card_cvc_error').classList.add('hidden');
+
+            // Validate card number (example: just checking length)
+            const cardNumber = document.getElementById('card_number').value;
+            if (cardNumber.length < 16 || isNaN(cardNumber)) {
+                valid = false;
+                document.getElementById('card_number_error').classList.remove('hidden');
+            }
+
+            // Validate expiry date (MM/YY)
+            const cardExpiry = document.getElementById('card_expiry').value;
+            const expiryPattern = /^(0[1-9]|1[0-2])\/\d{2}$/;
+            if (!expiryPattern.test(cardExpiry)) {
+                valid = false;
+                document.getElementById('card_expiry_error').classList.remove('hidden');
+            }
+
+            // Validate CVC (length should be 3 or 4)
+            const cardCvc = document.getElementById('card_cvc').value;
+            if (cardCvc.length < 3 || cardCvc.length > 4 || isNaN(cardCvc)) {
+                valid = false;
+                document.getElementById('card_cvc_error').classList.remove('hidden');
+            }
+
+            if (!valid) {
+                event.preventDefault(); // Prevent form submission if validation fails
+            }
+        });
+    </script>
 </body>
 
 </html>

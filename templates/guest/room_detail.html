@@ -96,11 +96,13 @@
                     <h4>Description:</h4>
                     <p>{{ room.description }}</p>
                 </div>
+                <div style="padding-bottom: 50px;">
                 {% if room.availability == 'available' %}
                 <a href="{% url 'guest_book_room' room.id %}" class="btn btn-primary mt-3">Book Now</a>
                 {% else %}
                 <a href="#" class="btn btn-secondary btn-lg mt-3" aria-disabled="true" tabindex="-1">Not Available</a>
                 {% endif %}
+                </div>
             </div>
 
             <!-- Book This Room Section
@@ -133,9 +135,7 @@
     </div>
 
     <!-- Footer -->
-    <footer id="footer" class="mt-5">
-        <p>&copy; 2024 Edan Homestay. All rights reserved.</p>
-    </footer>
+    {% include 'footer.html' %}
 
     <!-- Bootstrap and jQuery JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

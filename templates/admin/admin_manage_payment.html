@@ -62,7 +62,8 @@
                         <h4>Manage Payments</h4>
                     </div>
                     <div class="card-body">
-                        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search payments..." onkeyup="searchBookings()">
+                        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search payments..."
+                            onkeyup="searchBookings()">
                         <div class="table-responsive">
                             <table id="payment" class="table table-striped"> <!-- Added ID here -->
                                 <thead>
@@ -94,10 +95,19 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <a href="#" class="btn btn-info btn-sm btn-action"><i
-                                                    class="bi bi-eye-fill"></i> View</a>
-                                            <a href="#" class="btn btn-warning btn-sm btn-action"><i
-                                                    class="bi bi-arrow-counterclockwise"></i> Refund</a>
+                                            <a href="{% url 'admin_view_payment_details' payment.payment_id %}"
+                                                class="btn btn-info btn-sm btn-action">
+                                                <i class="bi bi-eye-fill"></i> View
+                                            </a>
+                                            {% if payment.booking.status == 'Refund Requested' %}
+                                            <a href="{% url 'process_refund' payment.booking.refundrequest.id %}"
+                                                class="btn btn-warning btn-sm btn-action">
+                                                <i class="bi bi-arrow-counterclockwise"></i> Refund
+                                            </a>
+                                            {% else %}
+                                            <!-- Optionally, handle cases where there is no refund request -->
+                                            <span class="text-muted">No refund request</span>
+                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% empty %}
@@ -130,18 +140,18 @@
             // Get the search input value
             var input = document.getElementById('searchInput');
             var filter = input.value.toLowerCase();
-    
+
             // Get the table and its rows
             var table = document.getElementById('payment'); // Ensure this matches the ID added above
             var rows = table.getElementsByTagName('tr');
-    
+
             // Loop through all table rows and hide those that don't match the search query
             for (var i = 1; i < rows.length; i++) { // Starting from 1 to skip table headers
                 var row = rows[i];
                 var paymentID = row.getElementsByTagName('td')[0].textContent.toLowerCase();
                 var bookingID = row.getElementsByTagName('td')[1].textContent.toLowerCase();
                 var guestName = row.getElementsByTagName('td')[2].textContent.toLowerCase();
-    
+
                 // Check if search query matches payment ID, booking ID, or guest name
                 if (paymentID.includes(filter) || bookingID.includes(filter) || guestName.includes(filter)) {
                     row.style.display = ""; // Show the row

@@ -1,115 +1,99 @@
-{% load static %}
+{% load static %}{% load custom_filters %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edan Homestay</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .navbar-brand .logo-text {
-            font-family: 'Roboto', sans-serif; /* Apply font */
-            font-size: 1rem; /* Reduce font size */
-            color: #ffffff; /* White text color */
+            font-family: 'Roboto', sans-serif;
+            font-size: 1rem;
+            color: #ffffff;
         }
 
-        /* Custom styles for gradient header */
         .header-bg-gradient {
-            background: linear-gradient(90deg, #140900, #3b0a45); /* Gradient from black to dark purple */
-            color: #ffffff; /* White text color */
+            background: linear-gradient(90deg, #140900, #3b0a45);
+            color: #ffffff;
         }
 
         .header-form-control {
-            background-color: #ffffff; /* White background for form controls */
-            color: #000000; /* Black text for form controls */
+            background-color: #ffffff;
+            color: #000000;
         }
 
         .header-form-control::placeholder {
-            color: #666666; /* Dark gray placeholder text */
-        }   
-    
-        /* Custom carousel styling */
+            color: #666666;
+        }
+
         .carousel {
-            width: 70%; /* Reduce the width of the carousel */
-            margin: 0 auto; /* Center the carousel */
-            border: 2px solid #000000; /* Black border around the carousel */
-            border-radius: 5px; /* Optional: Add rounded corners */
-            overflow: hidden; /* Ensure images stay within the border */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Add shadow effect */
+            width: 70%;
+            margin: 0 auto;
+            border: 2px solid #000000;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         }
-    
+
         .carousel-inner {
-            height: 550px; /* Increase the height of the carousel */
+            height: 550px;
         }
-    
+
         .carousel-item img {
-            width: 100%; /* Ensure the image covers the width of the carousel */
-            height: 100%; /* Ensure the image covers the height of the carousel */
-            object-fit: cover; /* Make sure images cover the container */
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
-    
-        /* Adjust carousel indicators */
+
         .carousel-indicators li {
             width: 10px;
             height: 10px;
             border-radius: 50%;
-            background-color: #000000; /* Black indicators */
+            background-color: #000000;
         }
-    
+
         .carousel-control-prev-icon,
         .carousel-control-next-icon {
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+            background-color: rgba(0, 0, 0, 0.5);
             border-radius: 50%;
         }
 
-        /* Custom styles for list-group */
         .list-group-item {
-            background-color: #ffffff; /* White background for list items */
-            color: #000000; /* Black text color */
-            border-color: #000000; /* Black border color */
+            background-color: #ffffff;
+            color: #000000;
+            border-color: #000000;
         }
 
         .list-group-item-action:hover {
-            background-color: #f8f9fa; /* Light gray for hover */
+            background-color: #f8f9fa;
         }
-    
+
         footer {
-            background-color: #000000; /* Black background for footer */
-            color: #ffffff; /* White text color for footer */
+            background-color: #000000;
+            color: #ffffff;
+        }
+        .find-your-stay {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            color: #ffffff;
+            letter-spacing: 2px;
         }
     </style>
 </head>
+
 <body>
     {% include 'navbar.html' %}
+
     <header class="header-bg-gradient py-5 border-bottom shadow-sm">
         <div class="container text-center my-5">
-            <h1 class="display-4">Find Your Stay</h1>
-            <form class="mt-4">
-                <div class="row justify-content-center g-3">
-                    <div class="col-md-3">
-                        <select class="form-control header-form-control">
-                            <option>Select Room Type</option>
-                            <option>Single Room</option>
-                            <option>Double Room</option>
-                            <option>Deluxe Room</option>
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="date" class="form-control header-form-control" placeholder="Check-in">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="date" class="form-control header-form-control" placeholder="Check-out">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="number" class="form-control header-form-control" placeholder="Number of Guests">
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary btn-lg mt-4">Search</button>
-            </form>
+            <h1 class="find-your-stay display-4" style="margin-top: 50px;">Find Your Stay</h1>
         </div>
     </header>
-    <!-- Reduced Size and Width Carousel Section -->
+
     <div id="carouselExampleIndicators" class="carousel slide my-5" data-ride="carousel">
         <ol class="carousel-indicators">
             <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
@@ -136,39 +120,40 @@
             <span class="sr-only">Next</span>
         </a>
     </div>
-    <div class="container my-5">
-        <h2>Room Reviews</h2>
-        <div class="list-group">
-            <a href="#" class="list-group-item list-group-item-action">
-                <div class="d-flex w-100 justify-content-start">
-                    <img src="https://via.placeholder.com/50" alt="Reviewer Image" class="rounded-circle mr-3">
-                    <div>
-                        <h5 class="mb-1">Excellent Stay!</h5>
-                        <p class="mb-1">The room was clean and comfortable. The staff were very friendly.</p>
-                        <small>John Doe</small>
+
+    <div class="container mx-auto my-5">
+        <h2 class="text-2xl font-bold mb-4">Room Reviews</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% for review in room_reviews %}
+            <div class="bg-white p-4 rounded-lg shadow-md">
+                <h4 class="text-xl font-semibold mb-2">{{ review.room.name }}</h4>
+                <h6 class="text-xl font-semibold mb-2">{{ review.room.type }}</h6>
+                <div class="space-y-2">
+                    {% for rating in review.ratings %}
+                    <div class="flex items-center">
+                        <span class="text-yellow-500">{{ rating.rating|stars }}</span>
+                        <span class="ml-2 text-sm text-gray-500">by {{ rating.guest.name }}</span>
                     </div>
-                </div>
-            </a>
-            <a href="#" class="list-group-item list-group-item-action">
-                <div class="d-flex w-100 justify-content-start">
-                    <img src="https://via.placeholder.com/50" alt="Reviewer Image" class="rounded-circle mr-3">
-                    <div>
-                        <h5 class="mb-1">Great Experience</h5>
-                        <p class="mb-1">Beautiful location and great amenities. Highly recommend!</p>
-                        <small>Jane Smith</small>
+                    <small class="text-gray-400">{{ rating.created_at|date:"Y-m-d H:i" }}</small>
+                    {% endfor %}
+                    {% for feedback in review.feedbacks %}
+                    <div class="border-t border-gray-200 pt-2">
+                        <p class="text-gray-700">{{ feedback.feedback }}</p>
+                        <small class="text-gray-500">Feedback by {{ feedback.guest.name }} on {{
+                            feedback.created_at|date:"Y-m-d H:i" }}</small>
                     </div>
+                    {% endfor %}
                 </div>
-            </a>
+            </div>
+            {% endfor %}
         </div>
     </div>
 
-    <footer id="footer" class="bg-dark text-white text-center py-3">
-        <p>&copy; 2024 Edan Homestay. All rights reserved.</p>
-    </footer>
-    
+    {% include 'footer.html' %}
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

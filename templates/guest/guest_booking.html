@@ -1,96 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booked Room List</title>
-    {% load static %} 
+    <title>Guest Booking List</title>
+    {% load static %}
+    {% load custom_tags %}
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <style>
         body {
-           padding-top: 80px;
+            padding-top: 80px;
         }
+
         .card {
             margin-bottom: 20px;
         }
-        .message-card {
-            margin: 10px;
-        }
+
         footer {
             background-color: #343a40;
             color: white;
             text-align: center;
             padding: 15px 0;
         }
+
+        .rating-stars {
+            font-size: 1.5rem;
+            color: #FFD700;
+            cursor: pointer;
+        }
     </style>
 </head>
+
 <body>
-    {% include 'guest_navbar.html' %}  {# Include your guest navigation bar #}
+    {% include 'guest_navbar.html' %}
 
     <div class="container mt-5">
-        {# Display Messages #}
-        <h2 class="mt-5">Messages from Admin</h2>
-        <div class="row">
-            {% if messages %}
+        <!-- Display Django messages using Bootstrap alert -->
+        {% if messages %}
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <ul class="mb-0">
                 {% for message in messages %}
-                    <div class="col-md-4 mb-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <p class="card-text">{{ message.content }}</p>
-                                <small class="text-muted">Sent by Admin on {{ message.sent_at }}</small> {# Assuming 'sent_at' is a timestamp in the Message model #}
-                            </div>
-                        </div>
-                    </div>
+                <li>{{ message }}</li>
                 {% endfor %}
-            {% else %}
-                <div class="col-12">
-                    <div class="alert alert-info" role="alert">No messages from admin yet.</div>
-                </div>
-            {% endif %}
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-    
+        {% endif %}
+
+        <!-- <h2>Messages from Admin</h2>
+        <div class="row">
+            {% if messages_for_guest %}
+            {% for message in messages_for_guest %}
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">{{ message.content }}</p>
+                        <small class="text-muted">Sent by Admin on {{ message.sent_at }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-12">
+                <div class="alert alert-info" role="alert">
+                    No messages from admin yet.
+                </div>
+            </div>
+            {% endif %}
+        </div> -->
+
+        <h2 class="mt-5">Your Bookings</h2>
         {% if bookings %}
-            <div class="row">
-                {% for booking in bookings %}
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100">
-                            <img src="{{ booking.room.images.first.image.url }}" class="card-img-top" alt="{{ booking.room.name }}">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ booking.room.name }}</h5>
-                                <p class="card-text">Type: {{ booking.room.type }}</p> 
-                                <p class="card-text">Check In: {{ booking.check_in }}</p>
-                                <p class="card-text">Check Out: {{ booking.check_out }}</p>
-                                <p class="card-text">Guests: {{ booking.number_of_guests }}</p>
-                                <p class="card-text">Advance Payment: ₹{{ booking.advance_payment }}</p>
-                                <p class="card-text">Status: {{ booking.status }}</p>
-    
-                                {% if booking.status != 'Cancelled' %}
-                                    <button class="btn btn-danger btn-cancel" data-booking-id="{{ booking.booking_id }}">Cancel</button>
-                                {% elif booking.status == 'Cancelled' %}
-                                    <button class="btn btn-warning btn-refund-request" data-booking-id="{{ booking.booking_id }}">Refund Request</button>
-                                {% endif %}
+        <div class="row">
+            {% for booking in bookings %}
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <img src="{{ booking.room.images.first.image.url }}" class="card-img-top"
+                        alt="{{ booking.room.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ booking.room.name }}</h5>
+                        <p class="card-text">Type: {{ booking.room.type }}</p>
+                        <p class="card-text">Check In: {{ booking.check_in }}</p>
+                        <p class="card-text">Check Out: {{ booking.check_out }}</p>
+                        <p class="card-text">Guests: {{ booking.number_of_guests }}</p>
+                        <p class="card-text">Advance Payment: ₹{{ booking.advance_payment }}</p>
+                        <p class="card-text">Status: {{ booking.status }}</p>
+
+                        {% if booking.status == 'Refund Requested' %}
+                        <div class="alert alert-info">
+                            Check terms and policy, and Edan will contact you.
+                        </div>
+                        {% elif booking.status == 'Cancelled' %}
+                        <form method="get" action="{% url 'refund_request_view' booking.booking_id %}">
+                            <button type="submit" class="btn btn-warning">Request Refund</button>
+                        </form>
+                        {% else %}
+                        <form method="post" action="{% url 'cancel_booking' booking.booking_id %}" class="cancel-form">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Cancel</button>
+                        </form>
+                        {% endif %}
+
+                        {% if booking.status == 'CheckedOut' %}
+                        <div class="rating mt-3">
+                            <p class="mb-2">Rate your stay:</p>
+                            <div class="rating-stars" data-booking-id="{{ booking.booking_id }}">
+                                {% for i in 5|generate_range %}
+                                <span class="star" data-rating="{{ i }}">&#9733;</span>
+                                {% endfor %}
                             </div>
                         </div>
+                        {% endif %}
                     </div>
-                {% endfor %}
+                </div>
             </div>
+            {% endfor %}
+        </div>
         {% else %}
-            <div class="col-12">
-                <div class="alert alert-info" role="alert">You haven't booked any rooms yet.</div>
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                You haven't booked any rooms yet.
             </div>
+        </div>
         {% endif %}
-    
-        
     </div>
-    
 
-    <footer id="footer" class="mt-5">
-        <p>&copy; 2024 Edan Homestay. All rights reserved.</p>
-    </footer>
+    {% include 'footer.html' %}
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script>
-        // JavaScript functionality remains the same...
+        // Attach event listener to all cancel forms
+        document.querySelectorAll('.cancel-form').forEach(form => {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent immediate submission
+                const confirmation = confirm('Are you sure you want to cancel this booking?');
+                if (confirmation) {
+                    form.submit(); // Submit only if confirmed
+                }
+            });
+        });
+
+        // Attach event listener to all refund request forms
+        document.querySelectorAll('.refund-form').forEach(form => {
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent immediate submission
+                const confirmation = confirm('Are you sure you want to request a refund?');
+                if (confirmation) {
+                    form.submit(); // Submit only if confirmed
+                }
+            });
+        });
     </script>
 </body>
+
 </html>

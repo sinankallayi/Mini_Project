@@ -5,122 +5,150 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Book Room - Edan Homestay</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css" rel="stylesheet">
+
     <style>
         body {
             padding-top: 80px;
-        }
-
-        footer {
-            background-color: #343a40;
-            color: white;
-            text-align: center;
-            padding: 15px 0;
         }
     </style>
 </head>
 
 <body>
     {% include 'guest_navbar.html' %}
-    <div class="container mt-4">
-        <div class="card">
-            <div class="card-header bg-dark text-white">
-                <h4>Book a Room</h4>
+    <div class="container mx-auto mt-4">
+        <div class="card bg-white rounded-lg shadow-md">
+            <div class="card-header text-white p-4 rounded-t-lg"
+                style="background: linear-gradient(90deg, #140900, #0a1045);">
+                <h4 class="text-lg font-semibold">Book a Room</h4>
             </div>
-            <div class="card-body form-section">
+
+
+
+            <div class="card-body p-4">
                 <form method="post" action="{% url 'guest_book_room' room.id %}" onsubmit="return validateForm()">
                     {% csrf_token %}
 
                     <!-- Room Name -->
-                    <div class="form-group">
-                        <label for="roomName">Room Name:</label>
-                        <input type="text" class="form-control" id="roomName" name="roomName" value="{{ room.name }}" readonly>
+                    <div class="mb-4">
+                        <label for="roomName" class="block text-sm font-medium text-gray-700">Room Name:</label>
+                        <input type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded" id="roomName"
+                            name="roomName" value="{{ room.name }}" readonly>
                     </div>
 
                     <!-- Room Type -->
-                    <div class="form-group">
-                        <label for="roomType">Room Type:</label>
-                        <input type="text" class="form-control" id="roomType" name="roomType" value="{{ room.type }}" readonly>
+                    <div class="mb-4">
+                        <label for="roomType" class="block text-sm font-medium text-gray-700">Room Type:</label>
+                        <input type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded" id="roomType"
+                            name="roomType" value="{{ room.type }}" readonly>
                     </div>
 
                     <!-- Price per Night -->
-                    <div class="form-group">
-                        <label for="balance_amount">Price per Night:</label>
-                        <input type="text" class="form-control" id="balance_amount" value="₹{{ room.price }}" readonly>
+                    <div class="mb-4">
+                        <label for="balance_amount" class="block text-sm font-medium text-gray-700">Price per
+                            Night:</label>
+                        <input type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            id="balance_amount" value="₹{{ room.price }}" readonly>
                     </div>
 
                     <!-- Check-in Date -->
-                    <div class="form-group">
-                        <label for="check_in">Check-In Date:</label>
-                        <input type="date" class="form-control" id="check_in" name="check_in" required>
+                    <div class="mb-4">
+                        <label for="check_in" class="block text-sm font-medium text-gray-700">Check-In Date:</label>
+                        <input type="date" class="mt-1 block w-full p-2 border border-gray-300 rounded" id="check_in"
+                            name="check_in" required onchange="calculateTotal()">
                     </div>
 
                     <!-- Check-out Date -->
-                    <div class="form-group">
-                        <label for="check_out">Check-Out Date:</label>
-                        <input type="date" class="form-control" id="check_out" name="check_out" required>
+                    <div class="mb-4">
+                        <label for="check_out" class="block text-sm font-medium text-gray-700">Check-Out Date:</label>
+                        <input type="date" class="mt-1 block w-full p-2 border border-gray-300 rounded" id="check_out"
+                            name="check_out" required onchange="calculateTotal()">
+                        <p class="text-gray-500 text-sm">Check-out time is 11 AM.</p> <!-- Checkout time message -->
                     </div>
 
                     <!-- Number of Guests -->
-                    <div class="form-group">
-                        <label for="number_of_guests">Number of Guests:</label>
-                        <input type="number" class="form-control" id="number_of_guests" name="number_of_guests" min="1" required>
+                    <div class="mb-4">
+                        <label for="number_of_guests" class="block text-sm font-medium text-gray-700">Number of
+                            Guests:</label>
+                        <select class="mt-1 block w-full p-2 border border-gray-300 rounded" id="number_of_guests"
+                            name="number_of_guests" required>
+                            <option value="">Select Number of Guests</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+
+                    <!-- Total Amount Display -->
+                    <div class="mb-4">
+                        <label for="total_amount" class="block text-sm font-medium text-gray-700">Total Amount:</label>
+                        <input type="text" class="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            id="total_amount" name="total_amount" readonly>
                     </div>
 
                     <!-- Advance Payment -->
-                    <div class="form-group">
-                        <label for="advance_payment">Advance Payment (minimum ₹{{ half_price }}):</label>
-                        <input type="number" class="form-control" id="advance_payment" name="advance_payment" min="0" required>
+                    <div class="mb-4">
+                        <label for="advance_payment" class="block text-sm font-medium text-gray-700">Advance Payment
+                            (minimum ₹{{ half_price }}):</label>
+                        <input type="number" class="mt-1 block w-full p-2 border border-gray-300 rounded"
+                            id="advance_payment" name="advance_payment" min="0" required>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                    <button type="submit"
+                        class="w-full mt-4 bg-blue-600 text-white font-semibold py-2 rounded hover:bg-blue-700 transition duration-200">Confirm
+                        Booking</button>
+                    {% if error_message %}
+                    <p class="text-red-500 mt-2">{{ error_message }}</p>
+                    {% endif %}
                 </form>
             </div>
         </div>
     </div>
 
-    <footer id="footer" class="mt-5">
+    <footer id="footer" class="mt-5 bg-gray-800 text-white text-center py-4">
         <p>&copy; 2024 Edan Homestay. All rights reserved.</p>
     </footer>
 
     <script>
-        function validateForm() {
-            // Get room price from the template and pass it into JavaScript
+        function calculateTotal() {
+            const checkIn = new Date(document.getElementById('check_in').value);
+            const checkOut = new Date(document.getElementById('check_out').value);
             const roomPrice = parseFloat("{{ room.price|escapejs }}");
-            const checkInDate = new Date(document.getElementById('check_in').value);
-            const checkOutDate = new Date(document.getElementById('check_out').value);
+
+            // Calculate total days and amount if dates are valid
+            if (checkOut > checkIn) {
+                const totalDays = (checkOut - checkIn) / (1000 * 60 * 60 * 24);
+                const totalAmount = totalDays * roomPrice;
+                document.getElementById('total_amount').value = `₹${totalAmount.toFixed(2)}`;
+            } else {
+                document.getElementById('total_amount').value = "Invalid dates";
+            }
+        }
+
+        function validateForm() {
+            const roomPrice = parseFloat("{{ room.price|escapejs }}");
+            const totalAmount = parseFloat(document.getElementById('total_amount').value.replace('₹', ''));
             const advancePayment = parseFloat(document.getElementById('advance_payment').value);
-
-            // Get today's date
-            const today = new Date();
-            today.setHours(0, 0, 0, 0); // Set the time to 00:00:00 for accurate comparison
-
-            // Ensure check-in date is after today
-            if (checkInDate <= today) {
-                alert('Check-in date must be after today\'s date.');
-                return false;
-            }
-
-            // Ensure check-out date is after check-in date
-            if (checkOutDate <= checkInDate) {
-                alert('Check-out date must be after the check-in date.');
-                return false;
-            }
-
-            // Ensure advance payment is at least half of the room price
             const halfRoomPrice = roomPrice / 2;
-            if (advancePayment < halfRoomPrice) {
-                alert(`Advance payment must be at least half of the room price: ₹${halfRoomPrice.toFixed(2)}.`);
+
+            if (advancePayment < halfRoomPrice || advancePayment > totalAmount) {
+                alert(`Advance payment must be between ₹${halfRoomPrice.toFixed(2)} and the total amount ₹${totalAmount.toFixed(2)}.`);
                 return false;
             }
-
             return true;  // Allow form submission if all checks pass
         }
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+            document.getElementById('check_in').setAttribute('min', today); // Set min for check-in date
+            document.getElementById('check_out').setAttribute('min', today); // Set min for check-out date
+        });
+    </script>
+
 </body>
 
 </html>

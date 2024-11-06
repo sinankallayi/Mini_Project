@@ -14,6 +14,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.shortcuts import render
 from django.urls import path
 from . import views
 
@@ -22,6 +23,7 @@ urlpatterns = [
     path('login/', views.login, name='login'),
     path('user_login/', views.user_login, name='user_login'),
     path('registration/', views.registration, name='registration'),
+    #path('forgot-password/', views.forgot_password, name='forgot_password'),
     path('edan_room/', views.edan_room, name='edan_room'),
     path('guest_registration/', views.guest_registration, name='guest_registration'),
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
@@ -33,6 +35,7 @@ urlpatterns = [
     path('admin_manage_bookings/<int:booking_id>/', views.admin_view_booking, name='admin_view_booking'),
     path('admin_send_message/<int:booking_id>/', views.admin_send_message, name='admin_send_message'),
     path('admin_manage_payment/', views.admin_manage_payment, name='admin_manage_payment'),
+    path('payment-details/<int:payment_id>/', views.edan_view_payment_details, name='admin_view_payment_details'),
     path('admin_manage_guest/', views.admin_manage_guest, name='admin_manage_guest'),
     path('admin_view_guest_details/<int:guest_id>/', views.admin_view_guest_details, name='admin_view_guest_details'),
     path('admin_add_guest/', views.admin_add_guest, name='admin_add_guest'),
@@ -47,6 +50,11 @@ urlpatterns = [
     path('admin_profile/', views.admin_profile, name='admin_profile'),
     path('book/<int:room_id>/', views.guest_book_room, name='guest_book_room'),
     path('payment/<int:booking_id>/<advance_payment>/', views.payment_page, name='payment_page'),
-    path('cancel-booking/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
-    path('refund-request/<int:booking_id>/', views.refund_request, name='refund_request'),
+    path('cancel_booking/<int:booking_id>/', views.cancel_booking, name='cancel_booking'),
+    path('refund/<int:booking_id>/', views.refund_request_view, name='refund_request_view'),
+    path('refund-success/', lambda request: render(request, 'refund_success.html'), name='refund_success'),
+    path('process_refund/<int:refund_id>/', views.process_refund, name='process_refund'),
+    path('rate-room/<int:room_id>/', views.rate_room, name='rate_room'),
+    path('terms-and-policy/', views.edan_terms_policy, name='terms_policy'),
+    path('notifications/', views.guest_notifications, name='guest_notifications'),
 ]

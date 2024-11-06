@@ -2,25 +2,24 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edan Homestay - Admin Dashboard</title>
+
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
-    <!-- Bootstrap Icons CDN -->
+    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-    
+
     <style>
         body {
-            padding-top: 70px; /* To prevent content hiding behind fixed navbar */
+            padding-top: 70px;
         }
 
-        
-
-        /* Dashboard Cards */
         .card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -30,13 +29,6 @@
             box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        /* Table Styling */
-        .table thead th {
-            background-color: #343a40;
-            color: #ffffff;
-        }
-
-        /* Action Buttons */
         .btn-action {
             border-radius: 20px;
             padding: 5px 10px;
@@ -47,39 +39,23 @@
             transform: scale(1.1);
         }
 
-        /* Profile Icon */
-        
+        .toggle-section {
+            display: none;
+        }
+
+        footer {
+            position: relative;
+            bottom: 0;
+            width: 100%;
+        }
     </style>
 </head>
+
 <body>
-    
     {% include 'admin_navbar.html' %}
-    <!-- Main Content -->
+
     <div class="container-fluid mt-4">
         <div class="row">
-            <!-- Sidebar (Optional) -->
-           
-            <!-- <div class="col-md-2 d-none d-md-block bg-light sidebar">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{% url 'admin_dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-house-door"></i> Manage Rooms</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-bookmark-check"></i> Manage Bookings</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-cash-stack"></i> Manage Payments</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-people"></i> Manage Guests</a>
-                    </li>
-                </ul>
-            </div>
-           -->
-
             <div class="col-12">
                 <!-- Dashboard Overview -->
                 <div class="row">
@@ -89,46 +65,49 @@
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h5 class="card-title">Total Rooms</h5>
-                                        <p class="card-text" id="totalRooms">50</p>
+                                        <p class="card-text">{{ total_rooms }}</p>
                                     </div>
                                     <i class="bi bi-house-door-fill" style="font-size: 2rem;"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3 mb-4">
                         <div class="card text-white bg-success">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h5 class="card-title">Total Bookings</h5>
-                                        <p class="card-text" id="totalBookings">120</p>
+                                        <p class="card-text">{{ total_bookings }}</p>
                                     </div>
                                     <i class="bi bi-bookmark-check-fill" style="font-size: 2rem;"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3 mb-4">
                         <div class="card text-white bg-warning">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h5 class="card-title">Total Guests</h5>
-                                        <p class="card-text" id="totalGuests">80</p>
+                                        <p class="card-text">{{ total_guests }}</p>
                                     </div>
                                     <i class="bi bi-people-fill" style="font-size: 2rem;"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="col-md-3 mb-4">
                         <div class="card text-white bg-danger">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
                                         <h5 class="card-title">Total Revenue</h5>
-                                        <p class="card-text" id="totalRevenue">$15,000</p>
+                                        <p class="card-text">₹ {{ total_revenue }}</p>
                                     </div>
                                     <i class="bi bi-cash-stack" style="font-size: 2rem;"></i>
                                 </div>
@@ -136,18 +115,106 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Ratings Section -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>Ratings</h5>
+                        <button class="btn btn-primary btn-action" id="toggleRatings">View</button>
+                    </div>
+                    <div class="card-body toggle-section" id="ratingsSection">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Guest</th>
+                                    <th>Room</th>
+                                    <th>Rating</th>
+                                    <th>Created At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rating in ratings %}
+                                <tr>
+                                    <td>{{ rating.guest.name }}</td>
+                                    <td>{{ rating.room.name }}</td>
+                                    <td>{{ rating.rating }} ★</td>
+                                    <td>{{ rating.created_at }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No ratings available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Feedback Section -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5>Feedbacks</h5>
+                        <button class="btn btn-primary btn-action" id="toggleFeedbacks">View</button>
+                    </div>
+                    <div class="card-body toggle-section" id="feedbacksSection">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Guest</th>
+                                    <th>Room</th>
+                                    <th>Feedback</th>
+                                    <th>Submitted At</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for feedback in feedbacks %}
+                                <tr>
+                                    <td>{{ feedback.guest.name }}</td>
+                                    <td>{{ feedback.room.name }}</td>
+                                    <td>{{ feedback.feedback }}</td>
+                                    <td>{{ feedback.created_at }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center">No feedbacks available</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-   
-<footer class="bg-light text-center py-3">
-    <p>&copy; 2024 Edan Homestay Admin. All rights reserved.</p>
-</footer>
+    <footer class="bg-light text-center py-3">
+        <p>&copy; 2024 Edan Homestay Admin. All rights reserved.</p>
+    </footer>
 
     <!-- Bootstrap and jQuery JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function toggleSection(buttonId, sectionId) {
+            const button = document.getElementById(buttonId);
+            const section = document.getElementById(sectionId);
+
+            button.addEventListener('click', function () {
+                if (section.style.display === 'none') {
+                    section.style.display = 'block';
+                    button.textContent = 'Close';
+                } else {
+                    section.style.display = 'none';
+                    button.textContent = 'View';
+                }
+            });
+        }
+
+        toggleSection('toggleRatings', 'ratingsSection');
+        toggleSection('toggleFeedbacks', 'feedbacksSection');
+    </script>
 </body>
+
 </html>

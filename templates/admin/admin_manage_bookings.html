@@ -2,6 +2,7 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,10 +17,9 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            padding-top: 70px; /* To prevent content hiding behind fixed navbar */
+            padding-top: 70px;
         }
 
-        /* Dashboard Cards */
         .card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
@@ -29,13 +29,11 @@
             box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        /* Table Styling */
         .table thead th {
             background-color: #343a40;
             color: #ffffff;
         }
 
-        /* Action Buttons */
         .btn-action {
             border-radius: 20px;
             padding: 5px 10px;
@@ -46,18 +44,24 @@
             transform: scale(1.1);
         }
 
-        /* Status Badge */
         .badge-confirmed {
             background-color: #28a745;
         }
+
         .badge-cancelled {
             background-color: #dc3545;
         }
+
         .badge-pending {
             background-color: #ffc107;
         }
+
+        .badge-refund {
+            background-color: #ff8307;
+        }
     </style>
 </head>
+
 <body>
     <!-- Navbar -->
     {% include 'admin_navbar.html' %}
@@ -66,15 +70,27 @@
     <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-12">
-                <!-- Manage Bookings Section -->
                 <div class="card mb-4">
                     <div class="card-header bg-dark text-white">
                         <h4>Manage Bookings</h4>
                     </div>
                     <div class="card-body">
 
-                        <!-- Search Input -->
-                        <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search bookings..." onkeyup="searchBookings()">
+                        <!-- Search Input and Date Filters -->
+                        <div class="form-row mb-3">
+                            <div class="col-md-4">
+                                <input type="text" id="searchInput" class="form-control" placeholder="Search bookings..." onkeyup="searchBookings()">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="date" id="startDate" class="form-control" placeholder="Start Date" onchange="filterByDate()">
+                            </div>
+                            <div class="col-md-3">
+                                <input type="date" id="endDate" class="form-control" placeholder="End Date" onchange="filterByDate()">
+                            </div>
+                            <div class="col-md-2">
+                                <button class="btn btn-primary btn-block" onclick="clearFilters()">Clear Filters</button>
+                            </div>
+                        </div>
 
                         <!-- Booking Table -->
                         <div class="table-responsive">
@@ -100,22 +116,21 @@
                                         <td>{{ booking.check_out }}</td>
                                         <td>
                                             {% if booking.status == 'Booked' %}
-                                                <span class="badge badge-confirmed">Booked</span>
+                                            <span class="badge badge-confirmed">Booked</span>
                                             {% elif booking.status == 'Cancelled' %}
-                                                <span class="badge badge-cancelled">Cancelled</span>
+                                            <span class="badge badge-cancelled">Cancelled</span>
+                                            {% elif booking.status == 'Refund Requested' %}
+                                            <span class="badge badge-refund">Refund Requested</span>
+                                            {% elif booking.status == 'Refunded' %}
+                                            <span class="badge badge-refunded">Refunded</span>
                                             {% else %}
-                                                <span class="badge badge-pending">Pending</span>
+                                            <span class="badge badge-pending">Pending</span>
                                             {% endif %}
                                         </td>
                                         <td>
                                             <a href="{% url 'admin_view_booking' booking.booking_id %}" class="btn btn-info">
                                                 <i class="bi bi-eye-fill"></i> View
-                                            </a>                                            
-                                            {% if booking.status != 'Cancelled' %}
-                                            <a href="#" class="btn btn-danger btn-sm btn-action">
-                                                <i class="bi bi-x-circle-fill"></i> Cancel
                                             </a>
-                                            {% endif %}
                                         </td>
                                     </tr>
                                     {% empty %}
@@ -128,13 +143,10 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Additional Sections Can Be Added Here -->
             </div>
         </div>
     </div>
 
-    <!-- Footer (Optional) -->
     <footer class="bg-light text-center py-3">
         <p>&copy; 2024 Edan Homestay Admin. All rights reserved.</p>
     </footer>
@@ -144,32 +156,51 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <!-- JavaScript for Search Functionality -->
+    <!-- JavaScript for Search and Date Filtering -->
     <script>
-    function searchBookings() {
-        // Get the search input value
-        var input = document.getElementById('searchInput');
-        var filter = input.value.toLowerCase();
+        function searchBookings() {
+            var input = document.getElementById('searchInput');
+            var filter = input.value.toLowerCase();
+            filterBookings(filter);
+        }
 
-        // Get the table and its rows
-        var table = document.getElementById('bookingTable');
-        var rows = table.getElementsByTagName('tr');
+        function filterByDate() {
+            filterBookings(document.getElementById('searchInput').value.toLowerCase());
+        }
 
-        // Loop through all table rows and hide those that don't match the search query
-        for (var i = 1; i < rows.length; i++) { // Starting from 1 to skip table headers
-            var row = rows[i];
-            var bookingID = row.getElementsByTagName('td')[0].textContent.toLowerCase();
-            var guestName = row.getElementsByTagName('td')[1].textContent.toLowerCase();
-            var roomName = row.getElementsByTagName('td')[2].textContent.toLowerCase();
+        function filterBookings(searchQuery) {
+            var startDate = new Date(document.getElementById('startDate').value);
+            var endDate = new Date(document.getElementById('endDate').value);
 
-            // Check if search query matches booking ID, guest name, or room name
-            if (bookingID.includes(filter) || guestName.includes(filter) || roomName.includes(filter)) {
-                row.style.display = ""; // Show the row
-            } else {
-                row.style.display = "none"; // Hide the row
+            var table = document.getElementById('bookingTable');
+            var rows = table.getElementsByTagName('tr');
+
+            for (var i = 1; i < rows.length; i++) {
+                var row = rows[i];
+                var bookingID = row.getElementsByTagName('td')[0].textContent.toLowerCase();
+                var guestName = row.getElementsByTagName('td')[1].textContent.toLowerCase();
+                var roomName = row.getElementsByTagName('td')[2].textContent.toLowerCase();
+                var checkInDate = new Date(row.getElementsByTagName('td')[3].textContent);
+                var checkOutDate = new Date(row.getElementsByTagName('td')[4].textContent);
+
+                var matchesSearch = bookingID.includes(searchQuery) || guestName.includes(searchQuery) || roomName.includes(searchQuery);
+                var withinDateRange = (!startDate || checkInDate >= startDate) && (!endDate || checkOutDate <= endDate);
+
+                if (matchesSearch && withinDateRange) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
             }
         }
-    }
+
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            filterBookings('');
+        }
     </script>
 </body>
+
 </html>

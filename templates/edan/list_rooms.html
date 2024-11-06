@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,7 +35,8 @@
         .room-details h5 {
             font-weight: 600;
             font-size: 1.2rem;
-            text-transform: uppercase; /* Make room name uppercase */
+            text-transform: uppercase;
+            /* Make room name uppercase */
         }
 
         .room-details p {
@@ -56,11 +58,13 @@
         }
 
         .available {
-            background-color: green; /* Green dot for available */
+            background-color: green;
+            /* Green dot for available */
         }
 
         .unavailable {
-            background-color: red; /* Red dot for unavailable */
+            background-color: red;
+            /* Red dot for unavailable */
         }
 
         /* Footer styles */
@@ -72,19 +76,20 @@
         }
     </style>
 </head>
+
 <body>
     {% include 'navbar.html' %}
-    
+
     <div class="container">
         <!-- Display login messages -->
         {% if messages %}
-          <div class="alert alert-info">
+        <div class="alert alert-info">
             {% for message in messages %}
-              {{ message }}
+            {{ message }}
             {% endfor %}
-          </div>
+        </div>
         {% endif %}
-        
+
         <div class="room-list">
             {% for room in rooms %}
             <!-- Room Item -->
@@ -94,15 +99,18 @@
                         <div class="carousel-inner">
                             {% for image in room.images.all %}
                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                <img src="{{ image.image.url }}" class="d-block w-100" alt="Room Image {{ forloop.counter }}">
+                                <img src="{{ image.image.url }}" class="d-block w-100"
+                                    alt="Room Image {{ forloop.counter }}">
                             </div>
                             {% endfor %}
                         </div>
-                        <a class="carousel-control-prev" href="#roomCarousel{{ room.id }}" role="button" data-slide="prev">
+                        <a class="carousel-control-prev" href="#roomCarousel{{ room.id }}" role="button"
+                            data-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="sr-only">Previous</span>
                         </a>
-                        <a class="carousel-control-next" href="#roomCarousel{{ room.id }}" role="button" data-slide="next">
+                        <a class="carousel-control-next" href="#roomCarousel{{ room.id }}" role="button"
+                            data-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="sr-only">Next</span>
                         </a>
@@ -112,40 +120,37 @@
                     <h5>{{ room.name }}</h5>
                     <p>Room Type: {{ room.type }}</p>
                     <p>
-                        <span class="availability-dot {% if room.availability == 'available' %}available{% else %}unavailable{% endif %}"></span>
+                        <span
+                            class="availability-dot {% if room.availability == 'available' %}available{% else %}unavailable{% endif %}"></span>
                         {% if room.availability == 'available' %}
-                            Available
+                        Available
                         {% else %}
-                            Not Available
+                        Not Available
                         {% endif %}
                     </p>
                     <p class="price">₹{{ room.price }} / night</p>
                     <a href="{% url 'edan_room_detail' room.id %}" class="btn btn-info mt-3">View Details</a>
                     {% if room.availability == 'available' %}
-                        {% if user.is_authenticated %}
-                            <a href="{% url 'guest_book_room' room.id %}" class="btn btn-primary mt-3">Book Now</a>
-                        {% else %}
-                            <a href="{% url 'login' %}?next={% url 'guest_book_room' room.id %}" class="btn btn-warning mt-3">Login First to Book</a>
-                        {% endif %}
+                    <a href="{% url 'login' %}?next={% url 'guest_book_room' room.id %}"
+                        class="btn btn-warning mt-3">Login First to Book</a>
                     {% else %}
-                        <a href="#" class="btn btn-secondary mt-3 disabled">Not Available</a>
+                    <a href="#" class="btn btn-secondary mt-3 disabled">Not Available</a>
                     {% endif %}
                 </div>
             </div>
             {% empty %}
-                <p>No rooms available.</p>
+            <p>No rooms available.</p>
             {% endfor %}
         </div>
     </div>
 
     <!-- Footer -->
-    <footer id="footer">
-        <p>&copy; 2024 Edan Homestay. All rights reserved.</p>
-    </footer>
+    {% include 'footer.html' %}
 
     <!-- Bootstrap and jQuery JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
+
 </html>

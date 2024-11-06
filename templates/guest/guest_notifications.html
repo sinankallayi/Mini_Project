@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <link href="{% static 'css/tailwind.min.css' %}" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 80px;
+        }
+
+        .notification-icon {
+            position: relative;
+        }
+
+        .notification-icon .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 0.1rem 0.4rem;
+            font-size: 0.75rem;
+        }
+
+        /* Animation for cards */
+        .card {
+            transition: transform 0.2s;
+            margin-top: 15px;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    {% include 'guest_navbar.html' %}
+
+    <div class="container mx-auto mt-10">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Messages from Admin</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {% if messages_for_guest %}
+            {% for message in messages_for_guest %}
+            <div class="card bg-white shadow-lg rounded-lg overflow-hidden transition duration-300 ease-in-out transform hover:shadow-xl">
+                <div class="p-4">
+                    <p class="text-gray-700">{{ message.content }}</p>
+                    <small class="text-gray-500">Sent by Admin on {{ message.sent_at }}</small>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-span-1">
+                <div class="bg-blue-100 text-blue-700 p-4 rounded-lg">
+                    No messages from admin yet.
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Notification Icon with Unread Count -->
+    <div class="notification-icon absolute top-4 right-4">
+        <i class="icon-bell text-3xl text-gray-700"></i>
+        {% if unread_count > 0 %}
+        <span class="badge">{{ unread_count }}</span>
+        {% endif %}
+    </div>
+
+    {% include 'footer.html' %}
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+</html>

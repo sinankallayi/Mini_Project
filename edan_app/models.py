@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils.timezone import now
+from datetime import timedelta, timezone
 
 # Create your models here.
 class LoginTable(models.Model):
@@ -48,6 +50,8 @@ class booking_table(models.Model):
         ('CheckedIn', 'Checked In'),
         ('CheckedOut', 'Checked Out'),
         ('Cancelled', 'Cancelled'),
+        ('RefundRequested', 'Refund Requested'),
+        ('Refunded', 'Refunded'),
     ]
 
     booking_id = models.AutoField(primary_key=True)  # Auto-incrementing booking ID
@@ -98,3 +102,43 @@ class Message(models.Model):
     
 
 
+class Rating(models.Model):
+    guest = models.ForeignKey(guest_table, on_delete=models.CASCADE)  # Guest foreign key
+    room = models.ForeignKey(room_table, on_delete=models.CASCADE)    # Room foreign key
+    rating = models.IntegerField()  # Rating value (1-5 stars)
+    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp when the rating was made
+
+    def __str__(self):
+        return f"{self.guest.name} rated {self.room.name} - {self.rating} stars"
+
+class Feedback(models.Model):
+    guest = models.ForeignKey(guest_table, on_delete=models.CASCADE)  # Guest foreign key
+    room = models.ForeignKey(room_table, on_delete=models.CASCADE)    # Room foreign key
+    feedback = models.TextField()  # Feedback text
+    created_at = models.DateTimeField(auto_now_add=True)  # Timestamp when the feedback was submitted
+
+    def __str__(self):
+        return f"Feedback by {self.guest.name} for {self.room.name}"
+
+
+class Refund(models.Model):
+    refund_id = models.AutoField(primary_key=True)  # Auto-incrementing refund ID
+    booking = models.ForeignKey('booking_table', on_delete=models.CASCADE)  # Link to booking
+    amount_refunded = models.DecimalField(max_digits=10, decimal_places=2)  # Amount refunded
+    refund_date = models.DateTimeField(auto_now_add=True)  # Timestamp of refund
+    reason = models.TextField(blank=True, null=True)  # Optional: Reason for refund
+
+    def __str__(self):
+        return f"Refund {self.refund_id} for Booking {self.booking.booking_id} - ₹{self.amount_refunded}"
+
+
+class RefundRequest(models.Model):
+    booking = models.OneToOneField('booking_table', on_delete=models.CASCADE, null=True)  
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    account_number = models.CharField(max_length=20)
+    ifsc_code = models.CharField(max_length=11)
+    request_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Refund Request from {self.name} for Booking {self.booking.booking_id if self.booking else 'N/A'}"
